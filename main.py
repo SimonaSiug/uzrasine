@@ -1,24 +1,28 @@
 from flask import Flask, request, render_template
-import sqlite3
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 uzrasai = []
+vartotojai = ["Vartotojas1", "Vartotojas2", "Vartotojas3"]
 
-@app.route('/uzrasai', methods=['GET', 'POST'])
-def handle_uzrasai():
+@app.route("/uzrasai", methods=['GET', 'POST'])
+def uzrasai_route():
+    global uzrasai
     if request.method == 'POST':
-        tekstinis_uzrasas = request.form['tekstas']
-        uzrasai.append(tekstinis_uzrasas)
-    return render_template('uzrasai.html', uzrasai=uzrasai)
+        notes = request.form.get('uzrasai')
+        uzrasai.append(notes)
+        return render_template('uzrasai.html', uzrasai=uzrasai)
+    else:
+        return render_template('uzrasai.html', uzrasai=uzrasai)
 
-@app.route('/vartotojai', methods=['GET'])
-def handle_vartotojai():
-    vartotojai = ['Jonas', 'Petras', 'Ona']
-    return render_template('vartotojai.html', vartotojai=vartotojai)
+@app.route("/vartotojai", methods=['GET', 'POST'])
+def vartotojai_route():
+    if request.method == 'POST':
+        user = request.form.get('vartotojai')
+        vartotojai.append(user)
+        return render_template('vartotojai.html', vartotojai=vartotojai)
+    else:
+        return render_template('vartotojai.html', vartotojai=vartotojai)
 
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
